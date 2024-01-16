@@ -29,13 +29,15 @@
         const classBData = await fetchStockData("BRK-B");
 
         // Display data in your HTML
-        document.getElementById(
-          "class-a-price"
-        ).textContent = `Class A Price: $${classAData.quote.regularMarketPrice}`;
+        document
+          .querySelectorAll("#class-a-price")
+          .forEach(
+            (e) => (e.textContent = `$${classAData.quote.regularMarketPrice}`)
+          );
         const classBPrice = classBData.quote.regularMarketPrice;
         document.getElementById(
           "class-b-price"
-        ).textContent = `Class B Price: $${classBPrice}`;
+        ).textContent = `$${classBPrice}`;
 
         // Calculate Class A price equivalent to Class B
         const classARatio = classBPrice * 1500;
@@ -77,20 +79,36 @@
   </head>
   <body class="">
     <div class="container mx-auto mb-6">
-      <h1 class="text-4xl font-bold text-center text-indigo-600 my-6">
-        Berkshire Class A vs B
-      </h1>
-      <!-- Quote Section -->
-      <div class="quote-section shadow-lg rounded-lg p-6">
+      <div class="intro-section px-4 py-8">
+        <div class="container mx-auto text-center">
+          <h1 class="text-4xl font-bold text-indigo-600">
+            Berkshire Hathaway: Class A or Class B?
+          </h1>
+          <p class="text-lg mt-4 font-light">
+            Let's say you have at least
+            <span id="class-a-price">Class A Price</span> and you're eyeing a
+            slice of Warren Buffett's empire, Berkshire Hathaway. But here comes
+            the big question: Is it better to invest in Class A or Class B
+            shares? It's not just about affordability; it's about making a wise
+            choice for your investment portfolio. Join us as we dive into a
+            comparison of these two share classes, unraveling the intricacies to
+            help you decide which one suits your investment goals.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- Quote Section -->
+    <div class="bg-indigo-900 mx-auto max-w-screen-sm rounded-xl shadow-xl text-indigo-100 p-12 mb-12">
+      <div class="mx-auto max-w-screen-sm">
         <p class="text-lg mb-4">
           "In my opinion, when the B shares are at a discount of more than 1%,
           it offers a better buy than the A shares."
         </p>
-        <p class="text-lg font-semibold text-indigo-600">- Warren Buffett</p>
+        <p class="text-lg font-semibold">- Warren Buffett</p>
         <a
           href="https://brkshr.com/class.html"
           target="_blank"
-          class="text-blue-600 hover:underline"
+          class="underline"
           >January 20, 2010</a
         >
       </div>
