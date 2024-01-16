@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berkshire Hathaway Share Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        async function fetchStockData(stockSymbol) {
+            // Fetch stock data from Yahoo Finance
+            const url = 'https://corsproxy.io/?' + encodeURIComponent(`https://query1.finance.yahoo.com/v7/finance/options/${stockSymbol}`);
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log(data);
+                return data.optionChain.result[0];
+            } catch (error) {
+                console.error('Error fetching stock data:', error);
+            }
+        }
+
+        async function displayStockData() {
+            // Fetch data for Class A and Class B shares
+            const classAData = await fetchStockData('BRK-A');
+            const classBData = await fetchStockData('BRK-B');
+
+            // Display data in your HTML
+            document.getElementById('class-a-price').textContent = `Class A Price: $${classAData.quote.regularMarketPrice}`;
+            const classBPrice = classBData.quote.regularMarketPrice;
+            document.getElementById('class-b-price').textContent = `Class B Price: $${classBPrice}`;
+
+            // Calculate Class A price equivalent to Class B
+            const classARatio = classBPrice * 1500;
+            const classAPrice = classAData.quote.regularMarketPrice;
+
+            // Display Class A price (1500x) and 1% minus of Class A price
+            document.getElementById('class-a-ratio').textContent = `Class B Price (1500x): $${classARatio}`;
+            document.getElementById('class-a-percentage').textContent = `1% minus of Class A Price: $${classAPrice * 0.99}`;
+
+            // Compare prices and provide a recommendation
+            if (classARatio < classAPrice * 0.99) {
+                document.getElementById('decision-suggestion').textContent = 'Recommended Buy: Class B';
+            } else {
+                document.getElementById('decision-suggestion').textContent = 'Recommended Buy: Class A';
+            }
+
+            // Calculate and display Absolute Price Difference and Percent Cheaper
+            const absolutePriceDifference = Math.abs(classARatio - classAPrice);
+            const percentCheaper = Math.abs(((classARatio - classAPrice) / classARatio) * 100);
+
+            document.getElementById('price-difference').textContent = `Absolute Price Difference: $${absolutePriceDifference.toFixed(0)}`;
+            document.getElementById('cheaper-percent').textContent = `Percent Cheaper: ${percentCheaper.toFixed(2)}%`;
+
+        }
+
+        window.onload = displayStockData;
+    </script>
+</head>
+<body class="bg-blue-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center text-indigo-600 my-6">Berkshire Hathaway Share Analysis</h1>
+
+        <div class="bg-blue-50 p-6 rounded-lg shadow-lg mb-8">
+            <p class="text-lg font-semibold mb-2">Current Analysis:</p>
+            <p id="class-a-price" class="text-xl">Class A Price: Loading...</p>
+            <p id="class-b-price" class="text-xl">Class B Price: Loading...</p>
+            <p id="class-a-ratio" class="text-xl">Class A Price (1500x): Loading...</p>
+            <p id="class-a-percentage" class="text-xl">1% of Class A Price: Loading...</p>
+            <p id="decision-suggestion" class="text-2xl font-semibold mt-4">Recommended Buy: Loading...</p>
+            <p id="price-difference" class="text-xl">Absolute Price Difference: Loading...</p>
+            <p id="cheaper-percent" class="text-xl">Percent Cheaper: Loading...</p>
+        </div>
+        <div class="bg-indigo-50 shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-indigo-600">Warren Buffett's Advice</h2>
+            <p class="text-lg mb-4">"In my opinion, when the B shares are at a discount of more than 1%, it offers a better buy than the A shares."</p>
+            <p class="text-lg font-semibold text-indigo-600">- Warren Buffett</p>
+            <a href="https://brkshr.com/class.html" target="_blank" class="text-blue-600 hover:underline">View Memo</a>
+        </div>
+    </div>
+</body>
+</html>
